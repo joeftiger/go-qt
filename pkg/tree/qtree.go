@@ -22,6 +22,14 @@ func (tree *QTree[T]) NaiveInsert(node QNode[T]) {
 	}
 }
 
+func (tree *QTree[T]) PointSearch(item T) *QNode[T] {
+	if tree.root == nil {
+		return nil
+	} else {
+		return tree.root.PointSearch(item, tree.compare)
+	}
+}
+
 type QNode[T any] struct {
 	parent   *QNode[T]
 	item     T
@@ -44,5 +52,17 @@ func (n *QNode[T]) NaiveInsert(node QNode[T], compare func(a, b T) int) {
 	} else {
 		node.parent = n
 		n.children[quad].NaiveInsert(node, compare)
+	}
+}
+
+func (n *QNode[T]) PointSearch(item T, compare func(a, b T) int) *QNode[T] {
+	quad := compare(n.item, item)
+
+	if quad == 0 {
+		return n
+	} else if n.children[quad] != nil {
+		return n.children[quad].PointSearch(item, compare)
+	} else {
+		return nil
 	}
 }
