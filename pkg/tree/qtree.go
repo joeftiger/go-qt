@@ -1,17 +1,12 @@
 package tree
 
 type QTree[T any] struct {
-	dim     int
 	compare func(a, b T) int
 	root    *QNode[T]
 }
 
-func NewQTree[T any](dim int, compare func(a, b T) int) QTree[T] {
-	return QTree[T]{dim, compare, nil}
-}
-
-func (tree *QTree[T]) Conjugate(q int) int {
-	return ((q + 1) % tree.dim) + 1
+func NewQTree[T any](compare func(a, b T) int) QTree[T] {
+	return QTree[T]{compare, nil}
 }
 
 func (tree *QTree[T]) NaiveInsert(node QNode[T]) {

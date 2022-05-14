@@ -23,19 +23,16 @@ func compare(a, b []int) int {
 
 func TestNewQTree(t *testing.T) {
 	const dim = 3
-	tree := NewQTree(dim, compare)
+	tree := NewQTree(compare)
 
 	if tree.root != nil {
 		t.Errorf("Actual root node = %v, Expected == nil", tree.root)
-	}
-	if tree.dim != dim {
-		t.Errorf("Actual tree dim = %d, Expected == %d", tree.dim, dim)
 	}
 }
 
 func TestQTree_NaiveInsertOnce(t *testing.T) {
 	const dim = 3
-	tree := NewQTree[[]int](dim, compare)
+	tree := NewQTree[[]int](compare)
 
 	item := make([]int, dim)
 
@@ -54,7 +51,7 @@ func TestQTree_NaiveInsertOnce(t *testing.T) {
 
 func TestQTree_NaiveInsert(t *testing.T) {
 	const dim = 3
-	tree := NewQTree[[]int](dim, compare)
+	tree := NewQTree[[]int](compare)
 
 	root := NewQNode(make([]int, dim), dim)
 	tree.NaiveInsert(root)
@@ -93,8 +90,5 @@ func TestQTree_NaiveInsert(t *testing.T) {
 
 	if &tree.root.item == &root.item {
 		t.Errorf("Actual root node = %v, Expected == %v", tree.root, root)
-	}
-	if tree.dim != dim {
-		t.Errorf("Actual tree dim = %d, Expected == %d", tree.dim, dim)
 	}
 }
