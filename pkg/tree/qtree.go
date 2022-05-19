@@ -25,6 +25,12 @@ func (tree *QTree[T]) PointSearch(item T) *QNode[T] {
 	}
 }
 
+func (tree *QTree[T]) Traverse(f func(*T)) {
+	if tree.root != nil {
+		tree.root.Traverse(f)
+	}
+}
+
 type QNode[T any] struct {
 	parent   *QNode[T]
 	item     T
@@ -59,5 +65,15 @@ func (n *QNode[T]) PointSearch(item T, compare func(a, b T) int) *QNode[T] {
 		return n.children[quad].PointSearch(item, compare)
 	} else {
 		return nil
+	}
+}
+
+func (n *QNode[T]) Traverse(f func(*T)) {
+	f(&n.item)
+
+	for _, c := range n.children {
+		if c != nil {
+			c.Traverse(f)
+		}
 	}
 }
