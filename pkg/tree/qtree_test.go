@@ -1,6 +1,7 @@
 package tree
 
 import (
+	"math/rand"
 	"reflect"
 	"testing"
 )
@@ -49,7 +50,7 @@ func TestQTree_NaiveInsertOnce(t *testing.T) {
 	}
 }
 
-func TestQTree_NaiveInsert(t *testing.T) {
+func TestQTree_NaiveInsertMany(t *testing.T) {
 	const dim = 3
 	tree := NewQTree[[]int](compare)
 
@@ -91,4 +92,27 @@ func TestQTree_NaiveInsert(t *testing.T) {
 	if &tree.root.item == &root.item {
 		t.Errorf("Actual root node = %v, Expected == %v", tree.root, root)
 	}
+}
+
+func FuzzQTree_NaiveInsert(f *testing.F) {
+	const dim = 16
+	tree := NewQTree[[]int](compare)
+
+	root := NewQNode(make([]int, dim), dim)
+	tree.NaiveInsert(root)
+
+	f.Fuzz(func(t *testing.T, unusedButNeeded int) {
+		item := make([]int, dim)
+		for i := 0; i < dim; i++ {
+			item[i] = rand.Int()
+		}
+
+		node := NewQNode(item, dim)
+		tree.NaiveInsert(node)
+
+		found := tree.PointSearch(item)
+		if found == nil {
+			t.Errorf("%v: Actual found = nil, Expected == not nil", item)
+		}
+	})
 }
