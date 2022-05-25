@@ -6,19 +6,6 @@ import (
 	"testing"
 )
 
-func TestAlbins(t *testing.T) {
-	const dim = 3
-	tree := NewQTree[[]int](compare)
-
-	fst := NewQNode([]int{1, 2, 3}, 3)
-
-	snd := NewQNode([]int{-1, -2, -3}, 3)
-
-	tree.NaiveInsert(fst)
-	tree.NaiveInsert(snd)
-
-}
-
 func compare(a, b []int) (equal bool, quad int) {
 
 	if reflect.DeepEqual(a, b) {
@@ -103,7 +90,7 @@ func TestQTree_NaiveInsertMany(t *testing.T) {
 		}
 	}
 
-	if &tree.root.key == &root.key {
+	if &tree.root.item == &root.item {
 		t.Errorf("Actual root node = %v, Expected == %v", tree.root, root)
 	}
 }
