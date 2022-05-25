@@ -25,9 +25,9 @@ func (n *QNode[T]) NaiveInsert(node QNode[T], compare func(a, b T) (bool, int)) 
 		fmt.Println("equal, cannot insert")
 	} else {
 		if n.children[quad] == nil {
+			node.parent = n
 			n.children[quad] = &node
 		} else {
-			node.parent = n
 			n.children[quad].NaiveInsert(node, compare)
 		}
 	}
