@@ -1,11 +1,13 @@
 package tree
 
+import "fmt"
+
 type QTree[T any] struct {
-	compare func(a, b T) int
+	compare func(a, b T) (bool, int)
 	root    *QNode[T]
 }
 
-func NewQTree[T any](compare func(a, b T) int) QTree[T] {
+func NewQTree[T any](compare func(a, b T) (bool, int)) QTree[T] {
 	return QTree[T]{compare, nil}
 }
 
@@ -45,21 +47,26 @@ func NewQNode[T any](item T, dim int) QNode[T] {
 	}
 }
 
-func (n *QNode[T]) NaiveInsert(node QNode[T], compare func(a, b T) int) {
-	quad := compare(n.item, node.item)
+func (n *QNode[T]) NaiveInsert(node QNode[T], compare func(a, b T) (bool, int)) {
+	equal, quad := compare(n.item, node.item)
 
-	if n.children[quad] == nil {
-		n.children[quad] = &node
+	if equal {
+		fmt.Println("equal, cannot insert")
 	} else {
-		node.parent = n
-		n.children[quad].NaiveInsert(node, compare)
+		if n.children[quad] == nil {
+			n.children[quad] = &node
+		} else {
+			node.parent = n
+			n.children[quad].NaiveInsert(node, compare)
+		}
 	}
+
 }
 
-func (n *QNode[T]) PointSearch(item T, compare func(a, b T) int) *QNode[T] {
-	quad := compare(n.item, item)
+func (n *QNode[T]) PointSearch(item T, compare func(a, b T) (bool, int)) *QNode[T] {
+	equal, quad := compare(n.item, item)
 
-	if quad == 0 {
+	if equal {
 		return n
 	} else if n.children[quad] != nil {
 		return n.children[quad].PointSearch(item, compare)

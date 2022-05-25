@@ -6,12 +6,13 @@ import (
 	"testing"
 )
 
-func compare(a, b []int) int {
-	quad := 0
+func compare(a, b []int) (equal bool, quad int) {
 
 	if reflect.DeepEqual(a, b) {
-		return quad
+		return true, -1
 	}
+
+	quad = 0
 
 	for i := 0; i < len(a); i++ {
 		if b[i] >= a[i] {
@@ -19,7 +20,7 @@ func compare(a, b []int) int {
 		}
 	}
 
-	return quad
+	return false, quad
 }
 
 func TestNewQTree(t *testing.T) {
