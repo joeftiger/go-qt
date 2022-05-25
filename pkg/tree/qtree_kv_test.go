@@ -14,7 +14,7 @@ type KVEntry struct {
 
 // The compare function which basically relies on compare_ordered
 func compare_kv_int(a, b KVEntry) (equal bool, quad int) {
-	return compare_ordered(a.key, b.key)
+	return compare_ordered[int](a.key, b.key)
 }
 
 // An example usage for the KV Store.
