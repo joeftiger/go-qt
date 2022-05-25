@@ -38,7 +38,7 @@ func TestKVStringStore(t *testing.T) {
 	found := tree.PointSearch(empty_entry)
 	if found != nil {
 		found_val := *found.item.value
-		t.Log(found_val) // will print "hello bern"
+		AssertEqualDeep(t, found_val, val_be)
 	}
 
 }
