@@ -22,3 +22,10 @@ func AssertNotEqual(t *testing.T, a interface{}, b interface{}) {
 	}
 	t.Errorf("Received %v (type %v) for both, expected different values", a, reflect.TypeOf(a))
 }
+
+func AssertEqualDeep(t *testing.T, a interface{}, b interface{}) {
+	if reflect.DeepEqual(a, b) {
+		return
+	}
+	t.Errorf("Received %v (type %v), expected %v (type %v)", a, reflect.TypeOf(a), b, reflect.TypeOf(b))
+}
