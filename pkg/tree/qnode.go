@@ -18,6 +18,20 @@ func NewQNode[T any](item T, dim int) QNode[T] {
 	}
 }
 
+func (n *QNode[T]) IsRoot() bool {
+	return n.parent == nil
+}
+
+func (n *QNode[T]) IsLeaf() bool {
+	for _, c := range n.children {
+		if c != nil {
+			return false
+		}
+	}
+
+	return true
+}
+
 func (n *QNode[T]) NaiveInsert(node QNode[T], compare func(a, b T) (bool, int)) {
 	equal, quad := compare(n.item, node.item)
 

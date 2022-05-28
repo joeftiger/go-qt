@@ -8,7 +8,7 @@ import (
 
 func TestNewQTree(t *testing.T) {
 	const dim = 3
-	tree := NewQTree(compare_ordered[int])
+	tree := NewQTree(dim, CompareOrdered[int])
 
 	if tree.root != nil {
 		t.Errorf("Actual root node = %v, Expected == nil", tree.root)
@@ -17,12 +17,12 @@ func TestNewQTree(t *testing.T) {
 
 func TestQTree_NaiveInsertOnce(t *testing.T) {
 	const dim = 3
-	tree := NewQTree[[]int](compare_ordered[int])
+	tree := NewQTree[[]int](dim, CompareOrdered[int])
 
 	item := make([]int, dim)
 
 	root := NewQNode(item, dim)
-	tree.NaiveInsert(root)
+	tree.NaiveInsertNode(root)
 
 	if tree.root == &root {
 		t.Errorf("Actual root node = %v, Expected == %v", tree.root, root)
@@ -36,10 +36,10 @@ func TestQTree_NaiveInsertOnce(t *testing.T) {
 
 func TestQTree_NaiveInsertMany(t *testing.T) {
 	const dim = 3
-	tree := NewQTree[[]int](compare_ordered[int])
+	tree := NewQTree[[]int](dim, CompareOrdered[int])
 
 	root := NewQNode(make([]int, dim), dim)
-	tree.NaiveInsert(root)
+	tree.NaiveInsertNode(root)
 
 	for x := -dim; x <= dim; x++ {
 		for y := -dim; y <= dim; y++ {
@@ -49,9 +49,7 @@ func TestQTree_NaiveInsertMany(t *testing.T) {
 				}
 
 				item := []int{x, y, z}
-				node := NewQNode(item, dim)
-
-				tree.NaiveInsert(node)
+				tree.NaiveInsert(item)
 			}
 		}
 	}
@@ -80,10 +78,10 @@ func TestQTree_NaiveInsertMany(t *testing.T) {
 
 func FuzzQTree_NaiveInsert(f *testing.F) {
 	const dim = 16
-	tree := NewQTree[[]int](compare_ordered[int])
+	tree := NewQTree[[]int](dim, CompareOrdered[int])
 
 	root := NewQNode(make([]int, dim), dim)
-	tree.NaiveInsert(root)
+	tree.NaiveInsertNode(root)
 
 	f.Fuzz(func(t *testing.T, unusedButNeeded int) {
 		item := make([]int, dim)
@@ -91,8 +89,7 @@ func FuzzQTree_NaiveInsert(f *testing.F) {
 			item[i] = rand.Int()
 		}
 
-		node := NewQNode(item, dim)
-		tree.NaiveInsert(node)
+		tree.NaiveInsert(item)
 
 		found := tree.PointSearch(item)
 		if found == nil {
