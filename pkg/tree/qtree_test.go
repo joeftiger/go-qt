@@ -24,7 +24,7 @@ func TestQTree_NaiveInsertOnce(t *testing.T) {
 	root := NewQNode(item, dim)
 	tree.NaiveInsertNode(root)
 
-	if tree.root == &root {
+	if tree.root == nil {
 		t.Errorf("Actual root node = %v, Expected == %v", tree.root, root)
 	}
 
