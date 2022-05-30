@@ -9,7 +9,7 @@ type KVEntryString struct {
 	value *string
 }
 
-// // The compare function which basically relies on CompareOrdered
+// The compare function which basically relies on CompareOrdered
 func compareKvStr(a, b KVEntryString) (equal bool, quad int) {
 	return CompareOrdered[string](*a.key, *b.key)
 }

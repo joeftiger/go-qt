@@ -39,3 +39,11 @@ func (tree *QTree[T]) Traverse(f func(*T)) {
 		tree.root.Traverse(f)
 	}
 }
+
+func (tree *QTree[T]) RangeSearch(bound []T) []*QNode[T] {
+	if tree.root == nil {
+		return nil
+	} else {
+		return tree.root.RangeSearch(bound, tree.compare, tree.compDim)
+	}
+}
