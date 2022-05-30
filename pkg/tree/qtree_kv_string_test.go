@@ -9,36 +9,36 @@ type KVEntryString struct {
 	value *string
 }
 
-// // The compare function which basically relies on compare_ordered
-func compare_kv_str(a, b KVEntryString) (equal bool, quad int) {
-	return compare_ordered[string](*a.key, *b.key)
+// // The compare function which basically relies on CompareOrdered
+func compareKvStr(a, b KVEntryString) (equal bool, quad int) {
+	return CompareOrdered[string](*a.key, *b.key)
 }
 
 // An example usage for the KV Store.
 func TestKVStringStore(t *testing.T) {
 	const dim = 3
-	tree := NewQTree[KVEntryString](compare_kv_str)
+	tree := NewQTree[KVEntryString](dim, compareKvStr)
 
 	// First entry
-	key_fr := []string{"switzerland", "fribourg"} // key composite
-	val_fr := "hello fribourg"
-	entry_fr := KVEntryString{&key_fr, &val_fr}
-	node_fr := NewQNode(entry_fr, dim)
-	tree.NaiveInsert(node_fr)
+	keyFr := []string{"Switzerland", "Fribourg"} // key composite
+	valFr := "Hello Fribourg"
+	entryFr := KVEntryString{&keyFr, &valFr}
+	tree.NaiveInsert(entryFr)
 
 	// Second entry
-	key_be := []string{"switzerland", "bern"} // key composite
-	val_be := "hello bern"
-	entry_be := KVEntryString{&key_be, &val_be}
-	node_be := NewQNode(entry_be, dim)
-	tree.NaiveInsert(node_be)
+	keyBe := []string{"Switzerland", "Bern"} // key composite
+	valBe := "Hello Bern"
+	entryBe := KVEntryString{&keyBe, &valBe}
+	tree.NaiveInsert(entryBe)
 
 	// Search first for bern
-	empty_entry := KVEntryString{&([]string{"switzerland", "bern"}), nil}
-	found := tree.PointSearch(empty_entry)
+	emptyEntry := KVEntryString{&([]string{"Switzerland", "Bern"}), nil}
+	found := tree.PointSearch(emptyEntry)
 	if found != nil {
-		found_val := *found.item.value
-		AssertEqualDeep(t, found_val, val_be)
+		AssertEqual(t, *found.item.value, valBe)
+		t.Log(*found.item.value) // will print "Hello Bern"
+	} else {
+		t.Errorf("Expected found = %T, Actual == %T", found, nil)
 	}
 
 }

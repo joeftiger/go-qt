@@ -12,26 +12,24 @@ type KVEntry struct {
 	value *string
 }
 
-// The compare function which basically relies on compare_ordered
-func compare_kv_int(a, b KVEntry) (equal bool, quad int) {
-	return compare_ordered[int](a.key, b.key)
+// The compare function which basically relies on CompareOrdered
+func compareKvInt(a, b KVEntry) (equal bool, quad int) {
+	return CompareOrdered[int](a.key, b.key)
 }
 
 // An example usage for the KV Store.
 func TestKVStore(t *testing.T) {
 	const dim = 3
-	tree := NewQTree[KVEntry](compare_kv_int)
+	tree := NewQTree[KVEntry](dim, compareKvInt)
 
 	// First entry
 	val := "hello world"
 	key := []int{1, 2, 3}
 	entry := KVEntry{key, &val}
-	node := NewQNode(entry, dim)
-	tree.NaiveInsert(node)
+	tree.NaiveInsert(entry)
 
 	// Search
-	empty_entry := KVEntry{[]int{1, 2, 3}, nil}
-	found := tree.PointSearch(empty_entry)
-	found_val := *found.item.value
-	AssertEqual(t, found_val, val)
+	emptyEntry := KVEntry{[]int{1, 2, 3}, nil}
+	found := tree.PointSearch(emptyEntry)
+	AssertEqual(t, *found.item.value, val)
 }
