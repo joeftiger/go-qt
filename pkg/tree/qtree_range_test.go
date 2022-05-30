@@ -30,8 +30,8 @@ func TestRangeSearch_DIM2(t *testing.T) {
 
 	bound := [][]int{tr, tl, bl, br}
 
-	for _, f := range tree.RangeSearch(bound) {
-		fmt.Printf("%v\n", f.item)
+	for i, f := range tree.RangeSearch(bound) {
+		fmt.Printf("[%d]: %v\n", i, f.item)
 	}
 
 }
@@ -65,8 +65,55 @@ func TestRangeSearch_DIM3(t *testing.T) {
 	}
 
 	fmt.Println("Found items in range search")
-	for _, f := range tree.RangeSearch(bound) {
-		fmt.Printf("%v\n", f.item)
+	for i, f := range tree.RangeSearch(bound) {
+		fmt.Printf("[%d]: %v\n", i, f.item)
+	}
+}
+
+func TestRangeSearch_DIM3_KV(t *testing.T) {
+	const dim = 2
+	tree := NewQTree[KVEntryString](dim, compareKvStr)
+
+	// First entry
+	key1 := []string{"Switzerland", "Fribourg"}
+	val1 := "Hello Fribourg"
+	entry1 := KVEntryString{&key1, &val1}
+	tree.NaiveInsert(entry1)
+
+	// Second entry
+	key2 := []string{"Switzerland", "Bern"}
+	val2 := "Hello Bern"
+	entry2 := KVEntryString{&key2, &val2}
+	tree.NaiveInsert(entry2)
+
+	// Third entry
+	key3 := []string{"Swaziland", "Mbabane"}
+	val3 := "Hello Mbabane "
+	entry3 := KVEntryString{&key3, &val3}
+	tree.NaiveInsert(entry3)
+
+	bound := [][]string{
+		[]string{"Swa", "C"},
+		[]string{"Saw", "Z"},
+		[]string{"Z", "A"},
+		[]string{"Z", "Z"},
+	}
+
+	bound_kv := []KVEntryString{
+		KVEntryString{&bound[0], nil},
+		KVEntryString{&bound[1], nil},
+		KVEntryString{&bound[2], nil},
+		KVEntryString{&bound[3], nil},
+	}
+
+	fmt.Println("Found items in range search for KV String Store")
+
+	//Should return
+	// [0]: key: [Switzerland Fribourg] val: [Switzerland Fribourg]
+	// [1]: key: [Swaziland Mbabane] val: [Swaziland Mbabane]
+	for i, f := range tree.RangeSearch(bound_kv) {
+		fmt.Printf("[%d]: key: %v ", i, *f.item.key)
+		fmt.Printf("val: %v\n", *f.item.key)
 	}
 
 }
