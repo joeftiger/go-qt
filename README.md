@@ -30,6 +30,36 @@ fmt.Println(found.item)
 
 Please be aware that `PointSearch()` returns a `*QNode[T]` where `T` corresponds to `[]float32` in our case. The returned node has an property called `.item` to retrieve your stored item.
 
+### Range Search
+
+```go
+const dim = 2
+tree := NewQTree[[]int](dim, CompareOrdered[int])
+
+//insert 5 items
+var items [5][]int
+items[0] = []int{-9, -9}
+items[1] = []int{-9, -11}
+items[2] = []int{-9, 2}
+items[3] = []int{-10, -9}
+items[4] = []int{12, -1}
+
+for i := 0; i < 5; i++ {
+	tree.NaiveInsert(items[i])
+}
+
+tl := []int{-10, 10}
+tr := []int{10, 10}
+
+bl := []int{-10, -10}
+br := []int{10, -10}
+
+bound := [][]int{tr, tl, bl, br}
+
+for i, f := range tree.RangeSearch(bound) {
+	fmt.Printf("[%d]: %v\n", i, f.item)
+}
+```
 
 ## Custom Structs
 
