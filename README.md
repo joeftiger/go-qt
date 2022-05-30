@@ -11,15 +11,14 @@ Say you want to only store vectors of dimension 3 with no associated values. Als
 Then, you pass the type and a comparison function, which compares your item. Here, we're going to use the provided `compare_ordered()` function, which can compare `Integers` and `Floats` and `~string`. (See <https://golang.org/x/exp/constraints> for more information)
 
 ```go
-tree := NewQTree[KVEntry](compare_ordered)
+tree := NewQTree[[]float32](dim, CompareOrdered[float32])
 ```
 
 To insert an item:
 
 ```go
 item := []float32{1.434, 21.222, 332.23432}
-node := NewQNode(item, dim)
-tree.NaiveInsert(node)
+tree.NaiveInsert(item)
 ```
 
 And search for an item:
@@ -57,31 +56,32 @@ This is all we need. Now, we can insert elements as follows:
 
 ```go
 const dim = 3
-tree := NewQTree[KVEntryString](compare_kv_str)
+tree := NewQTree[KVEntryString](dim, compareKvStr)
 
 // First entry
-key_fr := []string{"switzerland", "fribourg"} // key composite
-val_fr := "hello fribourg"
-entry_fr := KVEntryString{&key_fr, &val_fr}
-node_fr := NewQNode(entry_fr, dim)
-tree.NaiveInsert(node_fr)
+keyFr := []string{"Switzerland", "Fribourg"} // key composite
+valFr := "Hello Fribourg"
+entryFr := KVEntryString{&keyFr, &valFr}
+tree.NaiveInsert(entryFr)
 
 // Second entry
-key_be := []string{"switzerland", "bern"} // key composite
-val_be := "hello bern"
-entry_be := KVEntryString{&key_be, &val_be}
-node_be := NewQNode(entry_be, dim)
-tree.NaiveInsert(node_be)
+keyBe := []string{"Switzerland", "Bern"} // key composite
+valBe := "Hello Bern"
+entryBe := KVEntryString{&keyBe, &valBe}
+tree.NaiveInsert(entryBe)
 ```
 
 If we want to fetch now the associated value, then we do the following:
 
 ```go
-search_for := []string{"switzerland", "bern"}
-empty_entry := KVEntryString{&search_for, nil} // We pass nil as the value parameter
-found := tree.PointSearch(empty_entry)
+//search for bern
+emptyEntry := KVEntryString{&([]string{"Switzerland", "Bern"}), nil}
+found := tree.PointSearch(emptyEntry)
 if found != nil {
-	fmt.Println(*found.item.value) // always access the item, provided it exists!
+	AssertEqual(t, *found.item.value, valBe)
+	t.Log(*found.item.value) // will print "Hello Bern"
+} else {
+	t.Errorf("Expected found = %T, Actual == %T", found, nil)
 }
 ```
 
@@ -94,14 +94,13 @@ This is the built in comparison function. Your comparison function should behave
 However, if `a` and `b` are not the same, then `equal` should be `false` and your `quad` should be the integer from 0 to $2^n-1$ in which the item you're lookging for (`b`) lies in.
 
 ```go
-func compare_ordered[T constraints.Ordered](a, b []T) (equal bool, quad int) {
-
+// CompareOrdered compares vectors with values that are part of the constraints.Ordered type, i.e. int, float, string.
+func CompareOrdered[T constraints.Ordered](a, b []T) (equal bool, quad int) {
 	if reflect.DeepEqual(a, b) {
 		return true, -1
 	}
 
 	quad = 0
-
 	for i := 0; i < len(a); i++ {
 		if b[i] >= a[i] {
 			quad += 0b1 << i
