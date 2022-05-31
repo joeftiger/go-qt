@@ -8,7 +8,7 @@ Before initializing the tree, one needs to decide a type for the item they want 
 
 Say you want to only store vectors of dimension 3 with no associated values. Also, let the entries of the vectors be of type `float32`.
 
-Then, you pass the type and a comparison function, which compares your item. Here, we're going to use the provided `compare_ordered()` function, which can compare `Integers` and `Floats` and `~string`. (See <https://golang.org/x/exp/constraints> for more information)
+Then, you pass the type and a comparison function, which compares your item. Here, we're going to use the provided `CompareOrdered()` function, which can compare `Integers` and `Floats` and `~string`. (See <https://golang.org/x/exp/constraints> for more information)
 
 ```go
 tree := NewQTree[[]float32](dim, CompareOrdered[float32])
@@ -74,11 +74,11 @@ type KVEntryString struct {
 }
 ```
 
-Next, we need to specify a comparison function for our struct. On what properties do we want to compare it? Since strings are ordered, we can again rely on the provided `compare_ordered()`. 
+Next, we need to specify a comparison function for our struct. On what properties do we want to compare it? Since strings are ordered, we can again rely on the provided `CompareOrdered()`. 
 
 ```go
 func compare_kv_str(a, b KVEntryString) (equal bool, quad int) {
-	return compare_ordered[string](*a.key, *b.key)
+	return CompareOrdered[string](*a.key, *b.key)
 }
 ```
 
@@ -118,7 +118,7 @@ if found != nil {
 
 ## The comparison function
 
-The comparison function is basically the heart of this data structure. We provide a `compare_ordered()` function which compares `Integers`, `Floats` and `~string`. 
+The comparison function is basically the heart of this data structure. We provide a `CompareOrdered()` function which compares `Integers`, `Floats` and `~string`. 
 
 This is the built in comparison function. Your comparison function should behave, in regards to the return value, the same. This means, you should return a pair of `(equal bool, quad int)` where `equal` is `true` iff `a` and `b` are the same. It's good practice to return for `quad` a value like `-1` $\notin [0,2^n] \subset \mathbb{N}$, in this case.
 However, if `a` and `b` are not the same, then `equal` should be `false` and your `quad` should be the integer from 0 to $2^n-1$ in which the item you're lookging for (`b`) lies in.
