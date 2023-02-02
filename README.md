@@ -1,5 +1,5 @@
 # go-qt
-A Quadtree implemented in Go.
+A Quadtree implemented in Go for the lecture `Data Structures Data Management` at the university of Fribourg, Switzerland.
 
 
 ## Basic Usage
